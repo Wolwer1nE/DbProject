@@ -7,12 +7,11 @@ namespace DbProject
 {
     public class Product
     {
-        [Key]
         public int ProductId { get; set; }
 
         [Required]
         public string ProductName { get; set; }
 
-        public RecipeProduct RecipeProduct;
+        public List<Recipe> Recipes { get; set; } = new List<Recipe>();
     }
 }

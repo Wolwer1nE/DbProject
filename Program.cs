@@ -13,12 +13,16 @@ namespace DbProject
             {
                 Product product1 = new Product { ProductName = "яйцо" };
                 Product product2 = new Product { ProductName = "масло" };
-
-                RecipeProduct recipeProduct1 = new RecipeProduct { Product = product1 };
-                RecipeProduct recipeProduct2 = new RecipeProduct { Product = product2 };
-
                 db.Products.AddRange(product1, product2);
-                db.RecipeProducts.AddRange(recipeProduct1, recipeProduct2);
+                
+                var recipe1 = new Recipe { Name = "Яичница"};
+                recipe1.Products.Add(product1);
+                
+                var recipe2 = new Recipe { Name = "Яичница с маслом"};
+                recipe2.Products.Add(product1);
+                recipe2.Products.Add(product2);
+
+                db.Recipes.AddRange(recipe1, recipe2);
                 db.SaveChanges();
             }
 
@@ -32,11 +36,18 @@ namespace DbProject
                 }
 
                 Console.WriteLine();
-                var recipeProducts = db.RecipeProducts.ToList();
+                var recipes = db.Recipes
+                    .Include(c => c.Products)
+                    .ToList();
+                
                 Console.WriteLine("RecipeProducts list:");
-                foreach (RecipeProduct rp in recipeProducts)
+                foreach (var rp in recipes)
                 {
-                    Console.WriteLine($"{rp.RecipeProductId} - {rp.ProductId}");
+                    Console.WriteLine($"{rp.Name}:");
+                    foreach (var p in rp.Products)
+                    {
+                        Console.WriteLine($"      {p.ProductName}");
+                    }
                 }
             }
         }
